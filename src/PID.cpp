@@ -1,4 +1,5 @@
 #include "PID.h"
+#include <cmath>
 
 using namespace std;
 
@@ -11,22 +12,31 @@ PID::PID() {}
 PID::~PID() {}
 
 void PID::Init(double Kp, double Ki, double Kd) {
+
 	this->Kp = Kp;
-	this->Ki = Ki;
 	this->Kd = Kd;
+	this->Ki = Ki;
 
 	p_error = 0.0;
 	d_error = 0.0;
 	i_error = 0.0;
+
 }
 
 void PID::UpdateError(double cte) {
 	d_error = cte - p_error;
 	p_error = cte;
 	i_error += cte;
+
+	if (cte == 0)
+		i_error = 0;
+
+	if (fabs(cte) > 40)
+		i_error = 0;
 }
 
 double PID::TotalError() {
-	return Kp * p_error + Kd * d_error + Ki * i_error;
-}
 
+	double steering = -Kp * p_error - Kd * d_error - Ki * i_error;
+	return steering;
+}
