@@ -16,9 +16,8 @@ The propotional gain of the controller adjust the steering according to the cros
 
 To fix this oscillation we can introduce the derivative gain that sort of predicts the future value of the steering based on the difference between error at two steps. Below is the result of keeping the P-value same as above `0.09` and setting D-value to `3.0`. The oscillation is significantly reduced. 
 
-<p align="center">
-	![Propotional controll example](./video_d_example.gif)
-</p>
+![Propotional controll example](./video_d_example.gif)
+
 
 #### I Control
 
