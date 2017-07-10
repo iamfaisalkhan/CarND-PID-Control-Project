@@ -16,7 +16,9 @@ The propotional gain of the controller adjust the steering according to the cros
 
 To fix this oscillation we can introduce the derivative gain that sort of predicts the future value of the steering based on the difference between error at two steps. Below is the result of keeping the P-value same as above `0.09` and setting D-value to `3.0`. The oscillation is significantly reduced. 
 
-![Propotional controll example](./video_d_example.gif)
+<p align="center">
+	<img src="./video_d_example.gif">
+</p>
 
 
 #### I Control
@@ -46,5 +48,5 @@ The ```angle``` and ```cte``` values are provided by the simulator. We use the a
 ## Result
 
 <p align="center">
-	 ![Propotional controll example](./final2.gif)
+	<img src="./final2.gif">
 </p>
