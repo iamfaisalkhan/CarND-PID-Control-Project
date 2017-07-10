@@ -1,92 +1,51 @@
-# CarND-Controls-PID
-Self-Driving Car Engineer Nanodegree Program
+# CarND-Controls-PID Reflection
 
 ---
 
-## Dependencies
+# Effect of P, I, and D Gains:
 
-* cmake >= 3.5
- * All OSes: [click here for installation instructions](https://cmake.org/install/)
-* make >= 4.1
-  * Linux: make is installed by default on most Linux distros
-  * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
-  * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
-* gcc/g++ >= 5.4
-  * Linux: gcc / g++ is installed by default on most Linux distros
-  * Mac: same deal as make - [install Xcode command line tools]((https://developer.apple.com/xcode/features/)
-  * Windows: recommend using [MinGW](http://www.mingw.org/)
-* [uWebSockets](https://github.com/uWebSockets/uWebSockets)
-  * Run either `./install-mac.sh` or `./install-ubuntu.sh`.
-  * If you install from source, checkout to commit `e94b6e1`, i.e.
-    ```
-    git clone https://github.com/uWebSockets/uWebSockets 
-    cd uWebSockets
-    git checkout e94b6e1
-    ```
-    Some function signatures have changed in v0.14.x. See [this PR](https://github.com/udacity/CarND-MPC-Project/pull/3) for more details.
-* Simulator. You can download these from the [project intro page](https://github.com/udacity/self-driving-car-sim/releases) in the classroom.
+#### P Controll
 
-There's an experimental patch for windows in this [PR](https://github.com/udacity/CarND-PID-Control-Project/pull/3)
+The propotional gain of the controller adjust the steering according to the cross track error. However, this correction can lead to overshooting (car going off the tracks) as shown in the video below. The following video has the P value set to `0.09` and all other controller gains were set to `0.0`. 
 
-## Basic Build Instructions
+<p align="center">
+	![Propotional controll example](video_p_example.gif)
+</p>
 
-1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
+#### D Control
 
-## Editor Settings
+To fix this oscillation we can introduce the derivative gain that sort of predicts the future value of the steering based on the difference between error at two steps. Below is the result of keeping the P-value same as above `0.09` and setting D-value to `3.0`. The oscillation is significantly reduced. 
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+<p align="center">
+	![Propotional controll example](video_d_example.gif)
+</p>
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+#### I Control
 
-## Code Style
+The integral gain can further reduce the error.
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+## Parameter Tunning
 
-## Project Instructions and Rubric
+### Kp, Kd, and Ki Tunning
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+We used manual tunning to adjust the `Kp` , `Kd` and `Ki` gains for the PID-control. Here is the pseudo code for steps followed:
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
+* Increase Kp until the car steering value starts to overshoot a lot.
+* Increase Kd to compensate for the overshooting until no further improvement is visible. 
+* Use a very small values of Ki to further smooth out the oscillation.  
 
-## Hints!
+### Speed
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+The throttle is set as follows:
 
-## Call for IDE Profiles Pull Requests
+```
+throttle = 0.1 + ((25.0 - fabs(angle)) / 25.0) * .7 - (fabs(cte) * .05); 
 
-Help your fellow students!
+```
+The ```angle``` and ```cte``` values are provided by the simulator. We use the angle to determine if we are turnning or driving straight. We set the throttle as a function of how close (or far) the car angle is to being straight. The speed is then discounted by a fixed factor of the steering error - higher the error lower the throttle will be. This help us to recover from errors by reducing the current speed. 
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
+## Result
 
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
+<p align="center">
+	 ![Propotional controll example](final2.gif)
+</p>

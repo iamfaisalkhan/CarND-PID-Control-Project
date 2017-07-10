@@ -36,9 +36,9 @@ int main(int argc, char** argv)
   PID pidThrottle;
   // TODO: Initialize the pid variable.
 
-  float Kp = 0.0; 
-  float Kd = 0.0; 
-  float Ki = 0.0; 
+  float Kp = 0.09; 
+  float Kd = 2.8; 
+  float Ki = 0.000001; 
 
   if (argc > 3) {
     Kp = atof(argv[1]);
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
           pid.UpdateError(cte);
           steer_value = pid.TotalError();
 
-          throttle = 0.1 + ((25.0 - fabs(angle)) / 25.0) * .7 - (fabs(cte) * .09); 
+          throttle = 0.1 + ((25.0 - fabs(angle)) / 25.0) * .7 - (fabs(cte) * .05); 
           // DEBUG
           std::cout << "Angle " << angle <<std::endl;
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
