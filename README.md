@@ -9,7 +9,7 @@
 The propotional gain of the controller adjust the steering according to the cross track error. However, this correction can lead to overshooting (car going off the tracks) as shown in the video below. The following video has the P value set to `0.09` and all other controller gains were set to `0.0`. 
 
 <p align="center">
-	![Propotional controll example](./video_p_example.gif)
+	<img src="./video_p_example.gif">
 </p>
 
 #### D Control
